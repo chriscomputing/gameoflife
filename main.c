@@ -28,21 +28,21 @@ int _correct_long_parse(long val, char *endptr)
 void _allocate_board(int ***board)
 {
     // Allocate columns
-    *board = (int **)malloc(ncols * sizeof(int *));
+    *board = (int **)malloc(nrows * sizeof(int *));
 
     // Allocate rows
     for (int i = 0; i < nrows; i++)
     {
-        (*board)[i] = (int *)malloc(nrows * sizeof(int));
+        (*board)[i] = (int *)malloc(ncols * sizeof(int));
     }
 }
 
 void _initialize_board(int ***board)
 {
     srand(time(NULL));
-    for (int i = 0; i < ncols; i++)
+    for (int i = 0; i < nrows; i++)
     {
-        for (int j = 0; j < nrows; j++)
+        for (int j = 0; j < ncols; j++)
         {
             (*board)[i][j] = (rand() % 100 < SPAWN_CHANCE) ? 1 : 0;
         }
@@ -52,9 +52,9 @@ void _initialize_board(int ***board)
 long _alive_cells(int ***board)
 {
     long alive = 0;
-    for (int i = 0; i < ncols; i++)
+    for (int i = 0; i < nrows; i++)
     {
-        for (int j = 0; j < nrows; j++)
+        for (int j = 0; j < ncols; j++)
         {
             if ((*board)[i][j] == 1)
             {
@@ -90,9 +90,9 @@ void run(int ***board)
             _report_game(board, t);
         }
         // Run a single iteration
-        for (int i = 0; i < ncols; i++)
+        for (int i = 0; i < nrows; i++)
         {
-            for (int j = 0; j < nrows; j++)
+            for (int j = 0; j < ncols; j++)
             {
                 /**
                  * Collect neighbors
@@ -103,12 +103,12 @@ void run(int ***board)
                 int neighbors[8] = {
                     (i - 1 > 0 && j - 1 > 0) ? (*board)[i - 1][j - 1] : 0,         // Top left
                     (j - 1 > 0) ? (*board)[i][j - 1] : 0,                          // Top center
-                    (i + 1 < ncols && j - 1 > 0) ? (*board)[i + 1][j - 1] : 0,     // Top right
+                    (i + 1 < nrows && j - 1 > 0) ? (*board)[i + 1][j - 1] : 0,     // Top right
                     (i - 1 > 0) ? (*board)[i - 1][j] : 0,                          // Left center
-                    (i + 1 < ncols) ? (*board)[i + 1][j] : 0,                      // Right center
-                    (i - 1 > 0 && j + 1 < nrows) ? (*board)[i - 1][j + 1] : 0,     // Left bottom
-                    (j + 1 < nrows) ? (*board)[i][j + 1] : 0,                      // Center bottom
-                    (i + 1 < ncols && j + 1 < nrows) ? (*board)[i + 1][j + 1] : 0, // Center right
+                    (i + 1 < nrows) ? (*board)[i + 1][j] : 0,                      // Right center
+                    (i - 1 > 0 && j + 1 < ncols) ? (*board)[i - 1][j + 1] : 0,     // Left bottom
+                    (j + 1 < ncols) ? (*board)[i][j + 1] : 0,                      // Center bottom
+                    (i + 1 < nrows && j + 1 < ncols) ? (*board)[i + 1][j + 1] : 0, // Center right
                 };
                 // TODO: If-branches are bad for GPUs, use ternary instead?
                 int counter = 0;
