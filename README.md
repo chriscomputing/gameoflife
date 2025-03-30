@@ -1,0 +1,1 @@
+# Speedrunning Conways game of life
