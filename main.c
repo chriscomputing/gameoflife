@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <time.h>
+#include <omp.h>
 
 #define NROWS 10
 #define NCOLS 10
@@ -66,6 +67,24 @@ long _alive_cells(int ***board)
     return alive;
 }
 
+void _time_report(double *times)
+{
+    // Sum up sim time
+    double sum = 0;
+    for (long i = 0; i < max_gens; i++)
+    {
+        sum += times[i];
+    }
+
+    // Get avg time per iteration
+    double avg = sum / max_gens;
+
+    printf("Total simulation time: %.3f seconds\n"
+           "Average time per step: %.3f seconds\n"
+           "|========================================================================|\n",
+           sum, avg);
+}
+
 void _report_game(int ***board, long t)
 {
     long alive = _alive_cells(board);
@@ -82,6 +101,7 @@ void _report_game(int ***board, long t)
 
 void run(int ***board)
 {
+    double times[max_gens];
 
     for (long t = 0; t < max_gens; t++)
     {
@@ -90,6 +110,7 @@ void run(int ***board)
             _report_game(board, t);
         }
         // Run a single iteration
+        int start = omp_get_wtime();
         for (int i = 0; i < nrows; i++)
         {
             for (int j = 0; j < ncols; j++)
@@ -137,8 +158,11 @@ void run(int ***board)
                 // All other combinations of state and neighbor count result in no change to board
             }
         }
+        double endtime = omp_get_wtime();
+        times[t] = endtime - start;
     }
     _report_game(board, max_gens);
+    _time_report(times);
 }
 
 void _deallocate_board(int **board)
