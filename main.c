@@ -5,10 +5,10 @@
 #include <time.h>
 #include <omp.h>
 
-#define NROWS 10
-#define NCOLS 10
-#define MAX_GENS 10
-#define GPS_RES 1
+#define NROWS 25000
+#define NCOLS 25000
+#define MAX_GENS 40
+#define GPS_RES 10
 #define SPAWN_CHANCE 45
 
 long nrows = NROWS;               // Number of rows
