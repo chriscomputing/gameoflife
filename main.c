@@ -110,7 +110,7 @@ void run(int ***board)
             _report_game(board, t);
         }
         // Run a single iteration
-        int start = omp_get_wtime();
+        double start = omp_get_wtime();
         for (int i = 0; i < nrows; i++)
         {
             for (int j = 0; j < ncols; j++)
